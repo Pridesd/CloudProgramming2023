@@ -133,3 +133,5 @@ dmypy.json
 
 #마이그레이션도 무시함!! 하 참 이거때문에 오류가 생긴거구만 참내
 migrations/
+
+_media/
