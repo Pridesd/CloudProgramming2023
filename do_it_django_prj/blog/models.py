@@ -15,6 +15,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):  # 절대 경로를 얻게 해줌
+        return f'/blog/category/{self.slug}'
+
     # 어드민 페이지에서 문법에 맞게 보이게 함
     class Meta:
         verbose_name_plural = "Categories"

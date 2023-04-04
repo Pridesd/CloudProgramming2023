@@ -6,4 +6,5 @@ from . import views #현재 위치에 있는 views를 가지고 옴
 urlpatterns = [
     path('', views.PostList.as_view()),
     path('<int:pk>/', views.PostDetail.as_view()),
+    path('category/<str:slug>', views.categories_page),
 ]
