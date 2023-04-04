@@ -36,8 +36,16 @@
         <a href="{{ post.file_upload.url }}"><button type="button" class="btn btn-outline-primary">첨부파일 다운로드</button></a>
             <span>{{ post.get_file_name }}</span>
         {% endif %}
-        <hr>
 
+        <hr>
+        {% if post.tags.exists %}
+            <br/>
+            <i class = "fas fa-tags">
+                {% for tag in post.tags.iterator %}
+                    <a href="{{ tag.get_absolute_url }}">{{ tag }}</a>
+                {% endfor %}
+            </i>
+        {% endif %}
         <!-- Comments Form -->
         <div class="card my-4">
           <h5 class="card-header">Leave a Comment:</h5>

@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 
-from .models import Post, Category
+from .models import Post, Category, Tag
+
 
 # Create your views here.
 
@@ -53,6 +54,22 @@ def categories_page(request, slug):
         post_list = Post.objects.filter(category=category)
     context = {
         'category': category,
+        'categories': Category.objects.all(),
+        'post_list': post_list,
+        'no_category_post_count': Post.objects.filter(category=None).count()
+    }
+    return render(
+        request,
+        'blog/post_list.html',
+        context
+    )
+
+
+def tag_page(request, slug):
+    tag = Tag.objects.get(slug=slug)
+    post_list = tag.post_set.all() #태그가 있는 애들을 전부 보여라
+    context = {
+        'tag': tag,
         'categories': Category.objects.all(),
         'post_list': post_list,
         'no_category_post_count': Post.objects.filter(category=None).count()
