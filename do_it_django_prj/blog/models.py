@@ -31,3 +31,6 @@ class Category(models.Model):
     #카테고리 이름을 찾아오게끔 함
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural= "Categories"
