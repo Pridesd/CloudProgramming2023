@@ -39,7 +39,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
     #author가 없어지면 게시글도 삭제
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
     #카테고리를 가지고 옴

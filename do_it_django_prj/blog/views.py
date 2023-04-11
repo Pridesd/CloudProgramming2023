@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from .models import Post, Category, Tag
 
@@ -25,6 +26,32 @@ from .models import Post, Category, Tag
 #             'post': post
 #         }
 #     )
+
+class PostUpdate(LoginRequiredMixin, UpdateView):
+
+
+# LoginRequiredMixin == 로그인 안 하면 차단
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Post
+    fields = [
+        'title', 'content', 'head_image', 'file_upload', 'category', 'tags'
+    ]
+
+    def test_func(self): #이게 트루인 경우에만 UserPassesTestMixin가 작동
+        return self.request.user.is_staff or self.request.user.is_superuser
+    def form_valid(self, form): # 로그인된 사용자인지 확인
+        current_user = self.request.user
+        if current_user.is_authenticated and (current_user.is_superuser or current_user.is_staff):
+            form.instance.author = current_user #form에 작성자에 현재 유저 저장
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return redirect('/blog/')
+    def get_context_data(self, **kwargs):
+        context = super(PostCreate, self).get_context_data()
+        context['categories'] = Category.objects.all()
+        context['no_category_post_count'] = Post.objects.filter(category=None).count()
+
+        return context
 class PostList(ListView):
     model = Post
     ordering = '-pk'
