@@ -28,7 +28,24 @@ from .models import Post, Category, Tag
 #     )
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = [
+        'title', 'content', 'head_image', 'file_upload', 'category', 'tags'
+    ]
 
+    template_name = "blog/post_form_update.html";
+    def dispatch(self, request, *args, **kwargs): #편집 창으로 넘어가기 전에 dispatch를 오버라이딩해 본인인지, 유효한 로그인인지 걸러줌
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(PostUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionError
+
+    def get_context_data(self, **kwargs):
+        context = super(PostUpdate, self).get_context_data()
+        context['categories'] = Category.objects.all()
+        context['no_category_post_count'] = Post.objects.filter(category=None).count()
+
+        return context
 
 # LoginRequiredMixin == 로그인 안 하면 차단
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):

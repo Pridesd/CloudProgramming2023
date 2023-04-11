@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+{% block main_area %}
+    <h1>블로그 업데이트</h1>
+    <form method="post" enctype="multipart/form-data">
+{#    파일이나 이미지를 포함한 내용을 전송할 때는 multipart/form-data를 사용#}
+        {% csrf_token %}
+{#        CSRF 공격에 대비하기 위해 사용 우리 사이트 안에서 우리가 사용하는 정보라는 걸 증명하는 암호 코드#}
+        <table>
+            {{ form }}
+        </table>
+        <button type="submit" class="btn btn-primary">수정하기</button>
+    </form>
+{% endblock %}
