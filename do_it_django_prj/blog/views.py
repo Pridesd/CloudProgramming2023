@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
+from .forms import CommentForm
 from .models import Post, Category, Tag
 
 
@@ -85,6 +86,7 @@ class PostDetail(DetailView):
         context = super(PostDetail, self).get_context_data()
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
+        context['comment_form'] = CommentForm
 
         return context
 
@@ -123,3 +125,16 @@ def tag_page(request, slug):
         'blog/post_list.html',
         context
     )
+
+
+def add_comment(request, pk):
+    if request.method  == 'POST' and request.user.is_authenticated:
+        post = get_object_or_404(Post, pk=pk)
+        comment_form = CommentForm(request.POST)
+        comment_temp = comment_form.save(commit=False)
+        comment_temp.post = post
+        comment_temp.author = request.user
+        comment_temp.save()
+    else:
+        raise PermissionError
+    return redirect(post.get_absolute_url())
