@@ -25,7 +25,7 @@
             {% endif %}
             <div class="card-body">
                 <h2 class="card-title">{{ p.title}}</h2>
-                <p class="card-text">{{ p.hook}}</p>
+                <p class="card-text">{{ p.get_content_markdown | safe}}</p>
 
                 <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
             </div>
